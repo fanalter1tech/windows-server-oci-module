@@ -1,0 +1,18 @@
+#cloud-config
+write_files:
+  - path: C:/init.ps1
+    content: |
+      echo "add your custom commands and scripts here"
+runcmd:
+  - powershell.exe "C:/init.ps1"
+
+script: |
+  <powershell>
+  winrm set winrm/config/client/auth '@{Basic="true"}'
+  winrm set winrm/config/service/auth '@{Basic="true"}'
+  winrm set winrm/config/service '@{AllowUnencrypted="true"}'
+  winrm set winrm/config/winrs '@{MaxMemoryPerShellMB="300"}'
+  winrm set winrm/config '@{MaxTimeoutms="1800000"}'
+  $file = Join-Path -Path $env:SystemRoot -ChildPath (Get-Date).ToString("MM-dd-yy-hh-mm")
+  New-Item $file -ItemType file -Value "Hello from Terraform"
+  </powershell>
